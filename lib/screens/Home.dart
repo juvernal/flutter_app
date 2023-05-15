@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
    List <Plant> plantList=[
     
    ];
-   bool _isLoading = true;
+  //  bool _isLoading = true;
   //  void _refreshPlants() async{
   //   final data = await bd.plants();
   //   // debugPrint();
