@@ -245,6 +245,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.3"
+  image_utils_class:
+    dependency: "direct main"
+    description:
+      name: image_utils_class
+      sha256: "0e9dadea7c2c3d18de9c06b4778450255ce36381c413cb805a8a7b2b38adee11"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   intl:
     dependency: transitive
     description:
