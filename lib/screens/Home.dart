@@ -21,7 +21,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final bd = DBHelper();
    List <Plant> plantList=[
-    
+    Plant(id: 0, nomScientifique: "nomScientifique", nomVernaculaire: "nomVernaculaire", description: "description", localisation: "localisation", photo: "images/ghost.jpg", type: "type")
    ];
    bool _isLoading = true;
   //  void _refreshPlants() async{

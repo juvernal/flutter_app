@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+// import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widgets/my_input_decoration.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
@@ -69,15 +69,16 @@ class _MyNewFormState extends State<MyNewForm> {
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                 child: FormBuilderTextField(
+                  controller: null,
                   name: "nom_scientifique",
                   decoration: myInputDecoration(
                     "Nom scientifique", 
                     Icons.grass_outlined, 
                     const Color.fromARGB(255, 11, 41, 12)
                   ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Entrer le nom scientifique")
-                  ]),
+                  // validator: FormBuilderValidators.compose([
+                  //   FormBuilderValidators.required(errorText: "Entrer le nom scientifique")
+                  // ]),
                 )
               ),
               Padding(
@@ -89,9 +90,9 @@ class _MyNewFormState extends State<MyNewForm> {
                     FontAwesomeIcons.leaf, 
                     const Color.fromARGB(255, 11, 41, 12),
                   ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Entrer le nom vernaculaire")
-                  ]),
+                  // validator: FormBuilderValidators.compose([
+                  //   FormBuilderValidators.required(errorText: "Entrer le nom vernaculaire")
+                  // ]),
                 )
               ),
               Padding(
@@ -121,9 +122,9 @@ class _MyNewFormState extends State<MyNewForm> {
                     child: Text('herbe'),
                   ),
                 ],
-                validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: "Selectionner un type")
-                  ]),
+                // validator: FormBuilderValidators.compose([
+                //     FormBuilderValidators.required(errorText: "Selectionner un type")
+                //   ]),
               ),
               ),
               Padding(
@@ -165,7 +166,7 @@ class _MyNewFormState extends State<MyNewForm> {
                   backgroundColor: const Color.fromARGB(255, 11, 41, 12),
                 ),
                 onPressed: () async{
-                  if(_formKey.currentState!.saveAndValidate())
+                  if(true)
                     {
                       Plant pl = Plant(
                         id: 0, 
