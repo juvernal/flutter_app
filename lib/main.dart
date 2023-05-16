@@ -29,31 +29,56 @@ class BdTest extends StatefulWidget {
 }
 
 class _BdTestState extends State<BdTest> {
-  List<Map<String, dynamic>> _listItems = [];
+  List<Map<String, dynamic>> _listPlants = [];
   bool _isLoading = true;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _nomScientifiqueController =
+      TextEditingController();
+  final TextEditingController _nomVernaculaireController =
+      TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _localisationController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
 
   void _refreshList() async {
-    final data = await SqlHelper.getItems();
+    final data = await SqlHelper.getAllPlants();
     setState(() {
-      _listItems = data;
+      _listPlants = data;
       _isLoading = false;
     });
   }
 
   Future<void> _addItem() async {
-    await SqlHelper.addItem(_nameController.text, _ageController.text);
+    await SqlHelper.addPlant(
+        _nomScientifiqueController.text,
+        _nomVernaculaireController.text,
+        _descriptionController.text,
+        _localisationController.text,
+        _typeController.text);
     _refreshList();
-    debugPrint("The list of items in database is ${_listItems.length}");
+    debugPrint("The list of items in database is ${_listPlants.length}");
+  }
+
+  Future<void> _updateItem(int id) async {
+    await SqlHelper.updatePlant(
+        id,
+        _nomScientifiqueController.text,
+        _nomVernaculaireController.text,
+        _descriptionController.text,
+        _localisationController.text,
+        _typeController.text);
+    _refreshList();
+    debugPrint("The list of items in database is ${_listPlants.length}");
   }
 
   void _showForm(int? id) async {
     if (id != null) {
       final existingJournal =
-          _listItems.firstWhere((element) => element['id'] == id);
-      _nameController.text = existingJournal['name'];
-      _ageController.text = existingJournal['age'];
+          _listPlants.firstWhere((element) => element['id'] == id);
+      _nomScientifiqueController.text = existingJournal['nomScientifique'];
+      _nomVernaculaireController.text = existingJournal['nomVernaculaire'];
+      _descriptionController.text = existingJournal['description'];
+      _localisationController.text = existingJournal['localisation'];
+      _typeController.text = existingJournal['type'];
     }
 
     showModalBottomSheet(
@@ -72,34 +97,63 @@ class _BdTestState extends State<BdTest> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(hintText: "name"),
+              controller: _nomScientifiqueController,
+              decoration:
+                  const InputDecoration(hintText: "Nom Scientifique ..."),
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             TextField(
-              controller: _ageController,
-              decoration: const InputDecoration(hintText: "age"),
+              controller: _nomVernaculaireController,
+              decoration:
+                  const InputDecoration(hintText: "Nom Vernaculaire ..."),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(hintText: "Description ..."),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: _localisationController,
+              decoration: const InputDecoration(hintText: "Localisation ..."),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: _typeController,
+              decoration: const InputDecoration(hintText: "Type ..."),
             ),
             const SizedBox(
               height: 20,
             ),
             ElevatedButton(
-                onPressed: () async {
-                  if (id == null) {
-                    await _addItem();
-                  }
-                  if (id != null) {
-                    // await _updateItem(id);
-                  }
+              onPressed: () async {
+                if (id == null) {
+                  await _addItem();
+                }
+                if (id != null) {
+                  await _updateItem(id);
+                }
 
-                  _nameController.text = "";
-                  _ageController.text = "";
+                _nomScientifiqueController.text = '';
+                _nomVernaculaireController.text = '';
+                _descriptionController.text = '';
+                _localisationController.text = '';
+                _typeController.text = '';
 
-                  Navigator.of(context).pop();
-                },
-                child: Text(id == null ? "Create Dog" : "Update Dog")),
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                id == null ? "Creer une plante" : "Modifier une plante",
+              ),
+            ),
           ],
         ),
       ),
@@ -108,12 +162,19 @@ class _BdTestState extends State<BdTest> {
     return;
   }
 
+  void _deleteItem(int id) async {
+    await SqlHelper.deleteItem(id);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text("Suppression reussie")));
+    _refreshList();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _refreshList();
-    debugPrint("The list of items in database is ${_listItems.length}");
+    debugPrint("The list of items in database is ${_listPlants.length}");
   }
 
   @override
@@ -121,14 +182,29 @@ class _BdTestState extends State<BdTest> {
     return Scaffold(
       body: ListView.builder(
         itemBuilder: (context, index) => Card(
-          color: Colors.orange[200],
+          color: Colors.orange[300],
           margin: const EdgeInsets.all(15),
           child: ListTile(
-            title: Text(_listItems[index]['name']),
-            subtitle: Text(_listItems[index]['age']),
+            title: Text(_listPlants[index]['nom_scientifique']),
+            subtitle: Text(_listPlants[index]['nom_vernaculaire']),
+            trailing: SizedBox(
+              width: 100,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => _showForm(_listPlants[index]['id']),
+                    icon: const Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    onPressed: () => _deleteItem(_listPlants[index]['id']),
+                    icon: const Icon(Icons.delete),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
-        itemCount: _listItems.length,
+        itemCount: _listPlants.length,
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
