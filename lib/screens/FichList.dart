@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:testapp2/main.dart';
 import '../widgets/my_app_bar.dart';
 import '../widgets/my_bottom_bar.dart';
-import '../screens/FichForm.dart';
+// import '../screens/FichForm.dart';
+import '../screens/fich_form2.dart';
 
 class FichList extends StatefulWidget {
   const FichList({super.key});
@@ -21,7 +22,7 @@ class _FichListState extends State<FichList> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const FichForm();
+                      return const FichForm2();
                     }));
         },
         backgroundColor: const Color.fromARGB(255, 11, 41, 12),
