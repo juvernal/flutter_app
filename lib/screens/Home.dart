@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
    List <Plant> plantList=[
     Plant(id: 0, nomScientifique: "nomScientifique", nomVernaculaire: "nomVernaculaire", description: "description", localisation: "localisation", photo: "images/ghost.jpg", type: "type")
    ];
-   bool _isLoading = true;
+  //  bool _isLoading = true;
   //  void _refreshPlants() async{
   //   final data = await bd.plants();
   //   // debugPrint();

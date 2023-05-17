@@ -68,7 +68,6 @@ class _MyNewFormState extends State<MyNewForm> {
                   padding:
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                   child: FormBuilderTextField(
-                    controller: null,
                     name: "nom_scientifique",
                     decoration: myInputDecoration(
                         "Nom scientifique",
@@ -99,7 +98,7 @@ class _MyNewFormState extends State<MyNewForm> {
                   // value: 'item1',
                   hint: const Text('type de plante'),
                   decoration: const InputDecoration(
-                      labelText: 'type de plante',
+                      labelText: 'typle de plante',
                       enabledBorder: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(15.0))),
@@ -118,12 +117,7 @@ class _MyNewFormState extends State<MyNewForm> {
                       value: 'herbe',
                       child: Text('herbe'),
                     ),
-                    DropdownMenuItem(
-                      value: 'Liane',
-                      child: Text('liane'),
-                    ),
                   ],
-
                   // validator: FormBuilderValidators.compose([
                   //     FormBuilderValidators.required(errorText: "Selectionner un type")
                   //   ]),
@@ -214,7 +208,7 @@ class _MyNewFormState extends State<MyNewForm> {
                   const SizedBox(
                     width: 50,
                   ),
-                  SizedBox(
+                  Container(
                     width: 150.0,
                     height: 50.0,
                     //  color: const Color.fromARGB(255, 11, 41, 12),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum AnswerType{oui, non}
+// ignore: must_be_immutable
 class MyRadioButton extends StatelessWidget {
   MyRadioButton({super.key,
     required this.answerType,

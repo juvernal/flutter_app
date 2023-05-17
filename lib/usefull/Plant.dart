@@ -1,4 +1,4 @@
-import 'DBhelp.dart';
+// import 'DBhelp.dart';
 
 class Plant{
   final int id;
@@ -23,7 +23,7 @@ class Plant{
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'id': id,
-      'photo': photo,
+      // 'photo': photo,
       'nom_scientifique':nomScientifique,
       'nom_vernaculaire':nomVernaculaire,
       'description':description,
