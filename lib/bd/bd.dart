@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 // import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' as sql;
+import '../usefull/Plant.dart';
 
 class SqlHelper {
   static Future<void> createTables(sql.Database database) async {
@@ -13,7 +14,8 @@ class SqlHelper {
       nom_vernaculaire TEXT,
       description TEXT,
       localisation TEXT,
-      type TEXT
+      type TEXT,
+      photo TEXT
       ) 
     """);
     await database.execute("""CREATE TABLE dog(
@@ -22,6 +24,11 @@ class SqlHelper {
       age TEXT
       ) 
     """);
+  }
+
+  static void deletetable() async {
+    final db = await SqlHelper.db();
+    db.execute("""DROP TABLE plant""");
   }
 
   static Future<sql.Database> db() async {
@@ -40,21 +47,16 @@ class SqlHelper {
   // ====================================================================================================
 
   /// Methode utilisee pour ajouter une plante.
-  static Future<int> addPlant(
-    String? nomScientifique,
-    String? nomVernaculaire,
-    String? description,
-    String? localisation,
-    String? type,
-  ) async {
+  static Future<int> addPlant(Plant p) async {
     final db = await SqlHelper.db();
 
     final data = {
-      'nom_scientifique': nomScientifique,
-      'nom_vernaculaire': nomVernaculaire,
-      'description': description,
-      'localisation': localisation,
-      'type': type
+      'nom_scientifique': p.nomScientifique,
+      'nom_vernaculaire': p.nomVernaculaire,
+      'description': p.description,
+      'localisation': p.localisation,
+      'type': p.type,
+      'photo': p.photo
     };
     final id = await db.insert('plant', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
@@ -74,24 +76,18 @@ class SqlHelper {
   }
 
   /// Methode utilisee pour modifier une plante.
-  static Future<int> updatePlant(
-    int? id,
-    String? nomScientifique,
-    String? nomVernaculaire,
-    String? description,
-    String? localisation,
-    String? type,
-  ) async {
+  static Future<int> updatePlant(Plant p) async {
     final db = await SqlHelper.db();
 
     final data = {
-      'nom_scientifique': nomScientifique,
-      'nom_vernaculaire': nomVernaculaire,
-      'description': description,
-      'localisation': localisation,
-      'type': type
+      'nom_scientifique': p.nomScientifique,
+      'nom_vernaculaire': p.nomVernaculaire,
+      'description': p.description,
+      'localisation': p.localisation,
+      'type': p.type,
+      'photo': p.photo
     };
-    final result = db.update("plant", data, where: "id = ?", whereArgs: [id]);
+    final result = db.update("plant", data, where: "id = ?", whereArgs: [p.id]);
     return result;
   }
 

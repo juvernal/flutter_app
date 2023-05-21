@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../screens/Home.dart';
 import '../widgets/my_input_decoration.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import '../usefull/Plant.dart';
 import '../usefull/DBhelp.dart';
+import '../bd/bd.dart';
 // import '../usefull/Utility.dart';
 
 class MyNewForm extends StatefulWidget {
@@ -28,6 +30,13 @@ class ApiImage {
 class _MyNewFormState extends State<MyNewForm> {
   final _formKey = GlobalKey<FormBuilderState>();
   final bd = DBHelper();
+  final database = SqlHelper();
+  TextEditingController loc = TextEditingController();
+  TextEditingController sci = TextEditingController();
+  TextEditingController ver = TextEditingController();
+  TextEditingController desc = TextEditingController();
+  String? type;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +78,7 @@ class _MyNewFormState extends State<MyNewForm> {
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                   child: FormBuilderTextField(
                     name: "nom_scientifique",
+                    controller: sci,
                     decoration: myInputDecoration(
                         "Nom scientifique",
                         Icons.grass_outlined,
@@ -82,6 +92,7 @@ class _MyNewFormState extends State<MyNewForm> {
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                   child: FormBuilderTextField(
                     name: "nom_vernaculaire",
+                    controller: ver,
                     decoration: myInputDecoration(
                       "Nom vernaculaire",
                       FontAwesomeIcons.leaf,
@@ -106,7 +117,11 @@ class _MyNewFormState extends State<MyNewForm> {
                         Icons.format_list_numbered_outlined,
                         color: Color.fromARGB(255, 11, 41, 12),
                       )),
-                  onChanged: (_) {},
+                  onChanged: (value) {
+                    setState(() {
+                      type = value;
+                    });
+                  },
                   dropdownColor: Colors.white,
                   items: const [
                     DropdownMenuItem(
@@ -116,6 +131,10 @@ class _MyNewFormState extends State<MyNewForm> {
                     DropdownMenuItem(
                       value: 'herbe',
                       child: Text('herbe'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'liane',
+                      child: Text('liane'),
                     ),
                   ],
                   // validator: FormBuilderValidators.compose([
@@ -128,6 +147,7 @@ class _MyNewFormState extends State<MyNewForm> {
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                   child: FormBuilderTextField(
                     name: "description",
+                    controller: desc,
                     decoration: myInputDecoration(
                       "Description de la plante",
                       FontAwesomeIcons.info,
@@ -139,6 +159,7 @@ class _MyNewFormState extends State<MyNewForm> {
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                   child: FormBuilderTextField(
                     name: "localisation",
+                    controller: loc,
                     decoration: myInputDecoration(
                       "Localisation",
                       FontAwesomeIcons.mapLocation,
@@ -168,23 +189,23 @@ class _MyNewFormState extends State<MyNewForm> {
                       onPressed: () async {
                         if (true) {
                           Plant pl = Plant(
-                              id: 0,
-                              nomScientifique: _formKey
-                                  .currentState!.value['nom_scientifique'],
-                              nomVernaculaire: _formKey
-                                  .currentState!.value['nom_vernaculaire'],
-                              description:
-                                  _formKey.currentState!.value['description'],
-                              localisation:
-                                  _formKey.currentState!.value['localisation'],
-                              photo: 'photo',
-                              type: _formKey.currentState!.value['type']
-                                  .toString());
+                            nomVernaculaire: ver.text,
+                            nomScientifique: sci.text,
+                            description: desc.text,
+                            localisation: loc.text,
+                            photo: 'photo',
+                            type: type.toString(),
+                          );
                           // Image file = _formKey.currentState!.value['photos'];
                           // String photo_name = Utility.base64String(await );
-
-                          var p = bd.save(pl);
-                          debugPrint(p.toString());
+                          await SqlHelper.db();
+                          int val = await SqlHelper.addPlant(pl);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const Home();
+                          }));
+                          debugPrint(val.toString());
+                          debugPrint(pl.toString());
                         }
                       },
                       child: Row(
@@ -208,8 +229,8 @@ class _MyNewFormState extends State<MyNewForm> {
                   const SizedBox(
                     width: 50,
                   ),
-                  Container(
-                    width: 150.0,
+                  SizedBox(
+                    width: 140.0,
                     height: 50.0,
                     //  color: const Color.fromARGB(255, 11, 41, 12),
                     child: OutlinedButton(
@@ -219,6 +240,7 @@ class _MyNewFormState extends State<MyNewForm> {
                       ),
                       onPressed: () {
                         _formKey.currentState!.reset();
+                        // SqlHelper.deletetable();
                       },
                       child: Row(
                         children: const [
@@ -227,7 +249,7 @@ class _MyNewFormState extends State<MyNewForm> {
                             color: Colors.white,
                           ),
                           SizedBox(
-                            width: 15.0,
+                            width: 7.0,
                           ),
                           Text(
                             "Renitialiser",
