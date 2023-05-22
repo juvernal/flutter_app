@@ -2,12 +2,16 @@ import 'dart:async';
 
 // import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
+import 'package:path/path.dart';
 // import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart' as sql;
+// import 'package:sqflite/sqflite.dart';
 import '../usefull/Plant.dart';
 
 class SqlHelper {
   static Future<void> createTables(sql.Database database) async {
+    // SqlHelper.deletetable();
+
     await database.execute("""CREATE TABLE plant(
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
       nom_scientifique TEXT,
@@ -28,15 +32,27 @@ class SqlHelper {
 
   static void deletetable() async {
     final db = await SqlHelper.db();
-    db.execute("""DROP TABLE plant""");
+    db.execute("""DELETE FROM plant""");
+  }
+
+  static Future<void> deleteDatabase(String path) =>
+      sql.databaseFactory.deleteDatabase(path);
+  static void del() async {
+    String path = join(await sql.getDatabasesPath(), "d.db");
+    await deleteDatabase(path);
+    debugPrint("deleting Bd");
   }
 
   static Future<sql.Database> db() async {
+    // String path = join(await sql.getDatabasesPath(), "d.db");
+    // await deleteDatabase(path);
+    // debugPrint("init Bd");
     return sql.openDatabase(
       "d.db",
       version: 1,
       onCreate: (sql.Database database, int version) async {
         debugPrint("...dataBase is creating ... ");
+        // SqlHelper.deletetable();
         await createTables(database);
       },
     );

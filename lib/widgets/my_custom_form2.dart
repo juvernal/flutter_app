@@ -1,13 +1,19 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../screens/Home.dart';
+import '../usefull/Utility.dart';
 import '../widgets/my_input_decoration.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import '../usefull/Plant.dart';
 import '../usefull/DBhelp.dart';
 import '../bd/bd.dart';
+import 'package:get/get.dart';
 // import '../usefull/Utility.dart';
 
 class MyNewForm extends StatefulWidget {
@@ -36,6 +42,8 @@ class _MyNewFormState extends State<MyNewForm> {
   TextEditingController ver = TextEditingController();
   TextEditingController desc = TextEditingController();
   String? type;
+  String? photo;
+  File? pickedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -48,31 +56,61 @@ class _MyNewFormState extends State<MyNewForm> {
             scrollDirection: Axis.vertical,
             children: <Widget>[
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
-                child: FormBuilderImagePicker(
-                  name: 'photos',
-                  displayCustomType: (obj) =>
-                      obj is ApiImage ? obj.imageUrl : obj,
-                  decoration: const InputDecoration(
-                      labelText: 'IMAGE DE LA PLANTE',
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 11, 41, 12),
-                      )),
-                  transformImageWidget: (context, displayImage) => Card(
-                    shape: const CircleBorder(),
-                    clipBehavior: Clip.antiAlias,
-                    child: SizedBox.expand(
-                      child: displayImage,
-                    ),
-                  ),
-                  showDecoration: true,
-                  maxImages: 1,
-                  previewAutoSizeWidth: true,
-                  onSaved: null,
-                ),
-              ),
+                  padding:
+                      const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color:
+                                        const Color.fromARGB(255, 15, 82, 18),
+                                    width: 5),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(100),
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: pickedImage != null
+                                    ? Image.file(
+                                        pickedImage!,
+                                        width: 170,
+                                        height: 170,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.asset(
+                                        'images/ghost.jpg',
+                                        width: 170,
+                                        height: 170,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              right: 45.0,
+                              child: IconButton(
+                                onPressed: imagePickerOption,
+                                icon: const Icon(
+                                  Icons.add_a_photo,
+                                  color: Color.fromARGB(255, 16, 87, 18),
+                                  size: 40.0,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
               Padding(
                   padding:
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
@@ -125,6 +163,8 @@ class _MyNewFormState extends State<MyNewForm> {
                   dropdownColor: Colors.white,
                   items: const [
                     DropdownMenuItem(
+                      enabled: true,
+                      // activate(),
                       value: 'arbre',
                       child: Text('Arbre'),
                     ),
@@ -187,26 +227,32 @@ class _MyNewFormState extends State<MyNewForm> {
                         backgroundColor: const Color.fromARGB(255, 11, 41, 12),
                       ),
                       onPressed: () async {
-                        if (true) {
-                          Plant pl = Plant(
-                            nomVernaculaire: ver.text,
-                            nomScientifique: sci.text,
-                            description: desc.text,
-                            localisation: loc.text,
-                            photo: 'photo',
-                            type: type.toString(),
-                          );
-                          // Image file = _formKey.currentState!.value['photos'];
-                          // String photo_name = Utility.base64String(await );
-                          await SqlHelper.db();
-                          int val = await SqlHelper.addPlant(pl);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const Home();
-                          }));
-                          debugPrint(val.toString());
-                          debugPrint(pl.toString());
-                        }
+                        // if (true) {
+                        // XFile? img =
+                        //     _formKey.currentState?.fields['photo']?.value;
+                        debugPrint("saving...");
+                        String photo = Utility.base64String(
+                            await pickedImage!.readAsBytes());
+
+                        Plant pl = Plant(
+                          nomVernaculaire: ver.text,
+                          nomScientifique: sci.text,
+                          description: desc.text,
+                          localisation: loc.text,
+                          photo: photo,
+                          type: type.toString(),
+                        );
+                        // Image file = _formKey.currentState!.value['photos'];
+                        // String photo_name = Utility.base64String(await );
+                        await SqlHelper.db();
+                        int val = await SqlHelper.addPlant(pl);
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const Home();
+                        }));
+                        debugPrint(val.toString());
+                        debugPrint(pl.toString());
                       },
                       child: Row(
                         children: const [
@@ -239,8 +285,9 @@ class _MyNewFormState extends State<MyNewForm> {
                         backgroundColor: const Color.fromARGB(255, 11, 41, 12),
                       ),
                       onPressed: () {
+                        debugPrint(photo);
                         _formKey.currentState!.reset();
-                        // SqlHelper.deletetable();
+                        SqlHelper.del();
                       },
                       child: Row(
                         children: const [
@@ -267,6 +314,78 @@ class _MyNewFormState extends State<MyNewForm> {
                 child: null,
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  pickImage(ImageSource imageType) async {
+    try {
+      final photo = await ImagePicker().pickImage(source: imageType);
+      if (photo == null) return;
+      final tempImage = File(photo.path);
+      setState(() {
+        pickedImage = tempImage;
+      });
+
+      Get.back();
+    } catch (error) {
+      debugPrint(error.toString());
+    }
+  }
+
+  void imagePickerOption() {
+    Get.bottomSheet(
+      SingleChildScrollView(
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10.0),
+            topRight: Radius.circular(10.0),
+          ),
+          child: Container(
+            color: Colors.white,
+            height: 250,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    "Pic Image From",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      pickImage(ImageSource.camera);
+                    },
+                    icon: const Icon(Icons.camera),
+                    label: const Text("CAMERA"),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      pickImage(ImageSource.gallery);
+                    },
+                    icon: const Icon(Icons.image),
+                    label: const Text("GALLERY"),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(Icons.close),
+                    label: const Text("CANCEL"),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

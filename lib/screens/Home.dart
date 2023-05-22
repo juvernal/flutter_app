@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../usefull/Utility.dart';
 import '/screens/form.dart';
 import '../widgets/my_bottom_bar.dart';
 import '../bd/bd.dart';
@@ -15,6 +16,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    // SqlHelper.deletetable();
     getdata();
     super.initState();
   }
@@ -52,15 +54,23 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
           child: Container(
               child: plantList.isEmpty
-                  ? const Text("")
+                  ? const Text(
+                      "Welcome submit a new plant by pressing T PLUS button")
                   : Column(
                       children: plantList.map((plant) {
                         return Card(
                           child: ListTile(
-                            leading: null,
+                            leading: Utility.imageFromBase64String(
+                                plant["photo"] ?? ""),
                             title: Text(plant["nom_scientifique"]),
                             subtitle: Text(plant["type"]),
                             trailing: const Text("0"),
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return const MyForm();
+                              }));
+                            },
                           ),
                         );
                       }).toList(),

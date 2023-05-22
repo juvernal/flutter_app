@@ -25,7 +25,8 @@ class Plant {
       'nom_vernaculaire': nomVernaculaire,
       'description': description,
       'localisation': localisation,
-      'type': type
+      'type': type,
+      'photo': photo
     };
     return map;
   }
