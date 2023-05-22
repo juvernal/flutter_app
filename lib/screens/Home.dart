@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:testapp2/screens/FichList.dart';
+import '../usefull/Plant.dart';
 import '../usefull/Utility.dart';
 import '/screens/form.dart';
 import '../widgets/my_bottom_bar.dart';
@@ -22,13 +24,10 @@ class _HomeState extends State<Home> {
   }
 
   getdata() async {
-    Future.delayed(const Duration(milliseconds: 500), () async {
-      //use delay min 500 ms, because database takes time to initilize.
-      await SqlHelper.db();
-      plantList = await SqlHelper.getAllPlants();
-
-      setState(() {}); //refresh UI after getting data from table.
-    });
+    //use delay min 500 ms, because database takes time to initilize.
+    await SqlHelper.db();
+    plantList = await SqlHelper.getAllPlants();
+    setState(() {}); //refresh UI after getting data from table.
   }
 
   @override
@@ -54,8 +53,10 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
           child: Container(
               child: plantList.isEmpty
-                  ? const Text(
-                      "Welcome submit a new plant by pressing T PLUS button")
+                  ? const Center(
+                      child: Text(
+                          "Utilisez le bouton + pour ajouter une nouvelle plante"),
+                    )
                   : Column(
                       children: plantList.map((plant) {
                         return Card(
@@ -66,9 +67,20 @@ class _HomeState extends State<Home> {
                             subtitle: Text(plant["type"]),
                             trailing: const Text("0"),
                             onTap: () {
+                              Plant pl = Plant(
+                                  nomScientifique: plant["nom_scientifique"],
+                                  nomVernaculaire: plant["nom_vernaculaire"],
+                                  description: plant["description"],
+                                  localisation: plant["localisation"],
+                                  photo: plant["photo"],
+                                  type: plant["type"],
+                                  id: plant["id"]);
+
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return const MyForm();
+                                return FichList(
+                                  plant: pl,
+                                );
                               }));
                             },
                           ),

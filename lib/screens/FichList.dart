@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testapp2/usefull/Plant.dart';
 // import 'package:testapp2/main.dart';
 import '../widgets/my_app_bar.dart';
 import '../widgets/my_bottom_bar.dart';
@@ -6,7 +7,9 @@ import '../widgets/my_bottom_bar.dart';
 import '../screens/fich_form2.dart';
 
 class FichList extends StatefulWidget {
-  const FichList({super.key});
+  final Plant plant;
+  // FichList(this.plantID);
+  const FichList({required this.plant, super.key});
 
   @override
   State<FichList> createState() => _FichListState();
@@ -20,14 +23,15 @@ class _FichListState extends State<FichList> {
       bottomNavigationBar: const MyBottomAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context){
-                      return const FichForm2();
-                    }));
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return FichForm2(plant: widget.plant);
+          }));
         },
         backgroundColor: const Color.fromARGB(255, 11, 41, 12),
         child: const Icon(Icons.add),
       ),
+      body: Text(widget.plant.nomScientifique),
     );
   }
 }

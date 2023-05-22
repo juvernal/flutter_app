@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../usefull/Fiche.dart';
+import '../usefull/Plant.dart';
+import '../usefull/Utility.dart';
 import '../widgets/my_app_bar.dart';
 import '../widgets/my_bottom_bar.dart';
 import 'package:im_stepper/stepper.dart';
 
 class FichForm2 extends StatefulWidget {
-  const FichForm2({super.key});
+  final Plant plant;
+  const FichForm2({required this.plant, super.key});
 
   @override
   State<FichForm2> createState() => _FichForm2State();
@@ -75,6 +78,7 @@ class _FichForm2State extends State<FichForm2> {
   String? intox;
   String? consoEnfant;
   String? consoAdulte;
+  // final Plant pl = widget.plant;
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +299,17 @@ class _FichForm2State extends State<FichForm2> {
         return SingleChildScrollView(
           child: Column(
             children: [
-              if (initFiche) ...[result(fiche)]
+              Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  SizedBox(
+                    width: 200.0,
+                    height: 150.0,
+                    child: Utility.imageFromBase64String(widget.plant.photo),
+                  ),
+                  Text("Nom scientifique: ${widget.plant.nomScientifique}"),
+                ],
+              )
             ],
           ),
         );

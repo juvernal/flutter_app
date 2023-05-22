@@ -14,7 +14,6 @@ class MyForm extends StatefulWidget {
 }
 
 class _MyFormState extends State<MyForm> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
