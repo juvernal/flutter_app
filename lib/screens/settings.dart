@@ -16,8 +16,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context, "Parametre"),
-      bottomNavigationBar: const MyBottomAppBar(),
+      body: Text("Settings page !!!"),
     );
   }
 }

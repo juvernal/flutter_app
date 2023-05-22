@@ -8,8 +8,6 @@ class Plants extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: myAppBar(context, "Liste des plantes"),
-      bottomNavigationBar: const MyBottomAppBar(),
       backgroundColor: const Color.fromARGB(255, 33, 39, 26),
       body: Center(
         child: Container(

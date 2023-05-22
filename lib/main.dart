@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:testapp2/bd/bd.dart';
 import 'screens/Home.dart';
 
 void main() {
