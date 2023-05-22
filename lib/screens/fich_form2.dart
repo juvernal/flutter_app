@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../usefull/Fiche.dart';
+import '../usefull/fiche.dart';
 import '../usefull/Plant.dart';
 import '../usefull/Utility.dart';
 import '../widgets/my_app_bar.dart';
@@ -78,6 +78,7 @@ class _FichForm2State extends State<FichForm2> {
   String? intox;
   String? consoEnfant;
   String? consoAdulte;
+  String? typePersonne;
   // final Plant pl = widget.plant;
 
   @override
@@ -155,6 +156,72 @@ class _FichForm2State extends State<FichForm2> {
                   border: OutlineInputBorder(),
                   labelText: 'Lieu',
                 ),
+              ),
+              const Divider(),
+              const Text(
+                "Type de personne",
+                style: TextStyle(fontSize: 18),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile(
+                      title: const Text("Herboriste"),
+                      activeColor: radioColor(),
+                      value: "Herboriste",
+                      groupValue: typePersonne,
+                      onChanged: (value) {
+                        setState(() {
+                          typePersonne = value.toString();
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile(
+                      title: const Text("Tradi"),
+                      activeColor: radioColor(),
+                      value: "Tradipraticien",
+                      groupValue: typePersonne,
+                      onChanged: (value) {
+                        setState(() {
+                          typePersonne = value.toString();
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile(
+                      title: const Text("Neutre"),
+                      activeColor: radioColor(),
+                      value: "Habitant neutre",
+                      groupValue: typePersonne,
+                      onChanged: (value) {
+                        setState(() {
+                          typePersonne = value.toString();
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile(
+                      title: const Text("Malade"),
+                      activeColor: radioColor(),
+                      value: "Habitant Malade",
+                      groupValue: typePersonne,
+                      onChanged: (value) {
+                        setState(() {
+                          typePersonne = value.toString();
+                        });
+                      },
+                    ),
+                  )
+                ],
               ),
               const Divider(),
               const Text(
@@ -297,22 +364,23 @@ class _FichForm2State extends State<FichForm2> {
         );
       case 1:
         return SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  SizedBox(
-                    width: 200.0,
-                    height: 150.0,
-                    child: Utility.imageFromBase64String(widget.plant.photo),
-                  ),
-                  Text("Nom scientifique: ${widget.plant.nomScientifique}"),
-                ],
-              )
-            ],
-          ),
-        );
+            child: Column(
+          children: [
+            // width: 200.0,
+            // height: 150.0,
+            SizedBox(
+              width: 250.0,
+              height: 200.0,
+              child: Utility.imageFromBase64String(widget.plant.photo),
+            ),
+
+            Text("Nom scientifique: ${widget.plant.nomScientifique}"),
+            Text("Nom vernaculaire: ${widget.plant.nomVernaculaire}"),
+            Text("Type: ${widget.plant.type}"),
+            Text("Localisation: ${widget.plant.localisation}"),
+            Text("Description: ${widget.plant.description}"),
+          ],
+        ));
       case 2:
         return SingleChildScrollView(
           child: Column(
@@ -1329,6 +1397,12 @@ class _FichForm2State extends State<FichForm2> {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
+                label("Type de personne: ", 20.0),
+                labelRep(typePersonne ?? "", 19.0),
+              ]),
+              const Divider(
+                  color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
+              Row(children: [
                 label("Age: ", 20.0),
                 labelRep(age ?? "", 19.0),
               ]),
@@ -1526,13 +1600,29 @@ class _FichForm2State extends State<FichForm2> {
 
   void save() {
     fiche = Fiche(
-        nom: name.text,
-        age: age,
-        lieu: lieu.text,
-        sex: gender,
-        nomScientifique: "nomScientifique",
-        nomVernaculaire: "nomVernaculaire",
-        photo: "photo");
+      plantID: widget.plant.id,
+      doseAdulte: consoAdulte,
+      doseEnfant: consoEnfant,
+      dureTraitement: dureTraitement,
+      duree: dure,
+      effetSecondaire: effet,
+      etat: etat,
+      intoxication: intox,
+      periodeRecolte: recolte,
+      preparation: preparation,
+      sechage: sechage,
+      quatiteMateriel: materiel_vegetal,
+      sacre: "",
+      utilisation: emploi,
+      partie: "",
+      maladies: "",
+      typePerson: typePersonne,
+      typeAliment: typeAliment.text,
+      nom: name.text,
+      age: age,
+      lieu: lieu.text,
+      sex: gender,
+    );
     initFiche = true;
   }
 
