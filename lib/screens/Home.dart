@@ -22,13 +22,10 @@ class _HomeState extends State<Home> {
   }
 
   getdata() async {
-    Future.delayed(const Duration(milliseconds: 500), () async {
-      //use delay min 500 ms, because database takes time to initilize.
-      await SqlHelper.db();
-      plantList = await SqlHelper.getAllPlants();
-
-      setState(() {}); //refresh UI after getting data from table.
-    });
+    final a = await SqlHelper.getAllPlants();
+    setState(() {
+      plantList = a;
+    }); //refresh UI after getting data from table.
   }
 
   @override
