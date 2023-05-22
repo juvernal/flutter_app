@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:testapp2/bd/bd.dart';
-// import 'screens/Home.dart';
+import 'screens/Home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: "KOAME PlantMed",
       themeMode: ThemeMode.system,
-      home: BdTest(),
+      home: Home(),
     );
   }
 }
