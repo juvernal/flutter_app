@@ -18,7 +18,6 @@ class _MyFormState extends State<MyForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: myAppBar(context, "Nouvelle plante".toUpperCase()),
-      bottomNavigationBar: const MyBottomAppBar(),
       body: const MyNewForm(),
     );
   }

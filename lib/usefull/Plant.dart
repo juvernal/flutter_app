@@ -33,6 +33,6 @@ class Plant {
 
   @override
   String toString() {
-    return 'Plant{id: $id, nomScientifique: $nomScientifique, nomVernaculaire: $nomVernaculaire, type: $type}';
+    return 'Plant{id: $id, nom Scientifique: $nomScientifique, nom Vernaculaire: $nomVernaculaire, type: $type, location: $localisation}';
   }
 }

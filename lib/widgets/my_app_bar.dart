@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:testapp2/usefull/constantes.dart';
 
 AppBar myAppBar(BuildContext context, String title) {
-    return AppBar(
+  Constants constants = Constants();
+  return AppBar(
     centerTitle: true,
     title: Text(title),
-    leading: IconButton(onPressed: (){ Navigator.pop(context);}, icon: const Icon(Icons.arrow_back)),
-    backgroundColor: const Color.fromARGB(255, 11, 41, 12),
+    backgroundColor: constants.primaryColor,
   );
-  }
+}

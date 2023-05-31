@@ -2,11 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:testapp2/bd/bd.dart';
+import 'package:provider/provider.dart';
+import 'providers/plant_provider.dart';
 import 'screens/Home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider<PlantProvider>(
+    child: const MyApp(),
+    create: (_) => PlantProvider(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

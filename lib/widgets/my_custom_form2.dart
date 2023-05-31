@@ -1,15 +1,14 @@
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-// import 'package:form_builder_validators/form_builder_validators.dart';
+// ignore: depend_on_referenced_packages
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:testapp2/usefull/constantes.dart';
 import '../screens/Home.dart';
 import '../usefull/Utility.dart';
 import '../widgets/my_input_decoration.dart';
-import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import '../usefull/Plant.dart';
 import '../usefull/DBhelp.dart';
 import '../bd/bd.dart';
@@ -44,6 +43,7 @@ class _MyNewFormState extends State<MyNewForm> {
   String? type;
   String? photo;
   File? pickedImage;
+  Constants constants = Constants();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class _MyNewFormState extends State<MyNewForm> {
                                         fit: BoxFit.cover,
                                       )
                                     : Image.asset(
-                                        'images/ghost.jpg',
+                                        'images/plante.jpg',
                                         width: 170,
                                         height: 170,
                                         fit: BoxFit.cover,
@@ -117,6 +117,7 @@ class _MyNewFormState extends State<MyNewForm> {
                   child: FormBuilderTextField(
                     name: "nom_scientifique",
                     controller: sci,
+                    // validator: required,
                     decoration: myInputDecoration(
                         "Nom scientifique",
                         Icons.grass_outlined,
@@ -136,9 +137,6 @@ class _MyNewFormState extends State<MyNewForm> {
                       FontAwesomeIcons.leaf,
                       const Color.fromARGB(255, 11, 41, 12),
                     ),
-                    // validator: FormBuilderValidators.compose([
-                    //   FormBuilderValidators.required(errorText: "Entrer le nom vernaculaire")
-                    // ]),
                   )),
               Padding(
                 padding:
@@ -146,14 +144,14 @@ class _MyNewFormState extends State<MyNewForm> {
                 child: DropdownButtonFormField(
                   // value: 'item1',
                   hint: const Text('type de plante'),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                       labelText: 'typle de plante',
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(15.0))),
                       prefixIcon: Icon(
                         Icons.format_list_numbered_outlined,
-                        color: Color.fromARGB(255, 11, 41, 12),
+                        color: constants.primaryColor,
                       )),
                   onChanged: (value) {
                     setState(() {
@@ -207,24 +205,24 @@ class _MyNewFormState extends State<MyNewForm> {
                     ),
                   )),
               const Padding(
-                padding: EdgeInsets.only(top: 15.0),
+                padding: EdgeInsets.only(top: 10.0),
                 child: SizedBox(
-                  height: 20.0,
+                  height: 15.0,
                 ),
               ),
               Row(
                 children: [
                   const SizedBox(
-                    width: 20,
+                    width: 5,
                   ),
                   SizedBox(
-                    width: 145.0,
+                    width: 133.0,
                     height: 50.0,
                     //  color: const Color.fromARGB(255, 11, 41, 12),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         shape: const StadiumBorder(),
-                        backgroundColor: const Color.fromARGB(255, 11, 41, 12),
+                        backgroundColor: constants.primaryColor,
                       ),
                       onPressed: () async {
                         // if (true) {
@@ -242,15 +240,21 @@ class _MyNewFormState extends State<MyNewForm> {
                           photo: photo,
                           type: type.toString(),
                         );
-                        // Image file = _formKey.currentState!.value['photos'];
-                        // String photo_name = Utility.base64String(await );
                         await SqlHelper.db();
                         int val = await SqlHelper.addPlant(pl);
+                        // ignore: use_build_context_synchronously
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return const Home();
+                        // }));
+                        // ignore: use_build_context_synchronously
+                        // Navigator.of(context).pop();
                         // ignore: use_build_context_synchronously
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
                           return const Home();
                         }));
+                        setState(() {});
                         debugPrint(val.toString());
                         debugPrint(pl.toString());
                       },
@@ -261,12 +265,12 @@ class _MyNewFormState extends State<MyNewForm> {
                             color: Colors.white,
                           ),
                           SizedBox(
-                            width: 15.0,
+                            width: 5.0,
                           ),
                           Text(
                             "Enregistrer",
                             style:
-                                TextStyle(color: Colors.white, fontSize: 15.0),
+                                TextStyle(color: Colors.white, fontSize: 14.0),
                           ),
                         ],
                       ),
@@ -275,35 +279,40 @@ class _MyNewFormState extends State<MyNewForm> {
                   const SizedBox(
                     width: 50,
                   ),
-                  SizedBox(
-                    width: 140.0,
-                    height: 50.0,
-                    //  color: const Color.fromARGB(255, 11, 41, 12),
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        backgroundColor: const Color.fromARGB(255, 11, 41, 12),
-                      ),
-                      onPressed: () {
-                        debugPrint(photo);
-                        _formKey.currentState!.reset();
-                        SqlHelper.del();
-                      },
-                      child: Row(
-                        children: const [
-                          Icon(
-                            FontAwesomeIcons.arrowsRotate,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
-                            width: 7.0,
-                          ),
-                          Text(
-                            "Renitialiser",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 15.0),
-                          ),
-                        ],
+                  Expanded(
+                    child: SizedBox(
+                      width: 100.0,
+                      height: 50.0,
+                      //  color: const Color.fromARGB(255, 11, 41, 12),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          // fixedSize: const Size(15.0, 15.0),
+                          backgroundColor: constants.primaryColor,
+                        ),
+                        onPressed: () {
+                          debugPrint(photo);
+                          _formKey.currentState!.reset();
+                          SqlHelper.del();
+                        },
+                        child: Row(
+                          children: const [
+                            Icon(
+                              FontAwesomeIcons.arrowsRotate,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: 7.0,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "Reset",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15.0),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

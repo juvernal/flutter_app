@@ -198,11 +198,11 @@ class _FichFormState extends State<FichForm> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-            Text('Name: ${name.text}'),
-            Text('Email: ${age.text}'),
-            Text('Password: ${pass.text}'),
-            Text('Address : ${address.text}'),
-            Text('PinCode : ${pincode.text}'),
+                Text('Name: ${name.text}'),
+                Text('Email: ${age.text}'),
+                Text('Password: ${pass.text}'),
+                Text('Address : ${address.text}'),
+                Text('PinCode : ${pincode.text}'),
               ],
             ))
       ];
@@ -211,7 +211,7 @@ class _FichFormState extends State<FichForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: myAppBar(context, "nouvelle fiche"),
-      bottomNavigationBar: const MyBottomAppBar(),
+      // bottomNavigationBar: const MyBottomAppBar(),
       body: Stepper(
         type: StepperType.horizontal,
         currentStep: _activeCurrentStep,

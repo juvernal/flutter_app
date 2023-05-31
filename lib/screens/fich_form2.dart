@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:testapp2/screens/FichList.dart';
 import '../usefull/fiche.dart';
 import '../usefull/Plant.dart';
 import '../usefull/Utility.dart';
 import '../widgets/my_app_bar.dart';
 import '../widgets/my_bottom_bar.dart';
+import '../bd/bd.dart';
 import 'package:im_stepper/stepper.dart';
 
 class FichForm2 extends StatefulWidget {
@@ -79,13 +81,14 @@ class _FichForm2State extends State<FichForm2> {
   String? consoEnfant;
   String? consoAdulte;
   String? typePersonne;
+  String? partie;
   // final Plant pl = widget.plant;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: myAppBar(context, "nouvelle fiche"),
-      bottomNavigationBar: const MyBottomAppBar(),
+      // bottomNavigationBar: const MyBottomAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -408,6 +411,7 @@ class _FichForm2State extends State<FichForm2> {
                   Expanded(
                     child: RadioListTile(
                       activeColor: radioColor(),
+                      // autofocus: true,
                       title: const Text("non"),
                       value: "non",
                       groupValue: q1,
@@ -493,6 +497,262 @@ class _FichForm2State extends State<FichForm2> {
               children: [
                 const SizedBox(
                   height: 8.0,
+                ),
+                const Text(
+                  "Quelles parties récolter ?",
+                  style: TextStyle(fontSize: 18),
+                ),
+                if (widget.plant.type.toLowerCase() == "herbe") ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile(
+                          activeColor: radioColor(),
+                          title: const Text("Plante entière"),
+                          value: "Plante entière",
+                          groupValue: partie,
+                          onChanged: (value) {
+                            setState(() {
+                              partie = value.toString();
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile(
+                          activeColor: radioColor(),
+                          title: const Text("Feuilles"),
+                          value: "Feuilles",
+                          groupValue: partie,
+                          onChanged: (value) {
+                            setState(() {
+                              partie = value.toString();
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Tronc"),
+                        value: "Tronc",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                ],
+                if (widget.plant.type.toLowerCase() == "liane") ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile(
+                          activeColor: radioColor(),
+                          title: const Text("Plante entière"),
+                          value: "Plante entière",
+                          groupValue: partie,
+                          onChanged: (value) {
+                            setState(() {
+                              partie = value.toString();
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile(
+                          activeColor: radioColor(),
+                          title: const Text("Feuilles"),
+                          value: "Feuilles",
+                          groupValue: partie,
+                          onChanged: (value) {
+                            setState(() {
+                              partie = value.toString();
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Tronc"),
+                        value: "Tronc",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Tiges"),
+                        value: "Tiges",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                ],
+                if (widget.plant.type.toLowerCase() == "arbre") ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile(
+                          activeColor: radioColor(),
+                          title: const Text("Ecorces"),
+                          value: "Ecorces",
+                          groupValue: partie,
+                          onChanged: (value) {
+                            setState(() {
+                              partie = value.toString();
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile(
+                          activeColor: radioColor(),
+                          title: const Text("Racines"),
+                          value: "Racines",
+                          groupValue: partie,
+                          onChanged: (value) {
+                            setState(() {
+                              partie = value.toString();
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Ecorces des tiges"),
+                        value: "Ecorces des tiges",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Fruits"),
+                        value: "Fruits",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                  Row(children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Rhizome"),
+                        value: "Rhizome",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Style"),
+                        value: "Style",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                  Row(children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Graines"),
+                        value: "Graines",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Résines"),
+                        value: "Résines",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                  Row(children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: const Text("Fleurs"),
+                        value: "Fleurs",
+                        activeColor: radioColor(),
+                        groupValue: partie,
+                        onChanged: (value) {
+                          setState(() {
+                            partie = value.toString();
+                            // for (int i = 0; i < maladies.length; i++) {}
+                          });
+                        },
+                      ),
+                    ),
+                  ]),
+                ],
+                Divider(
+                  color: Colors.green.shade900,
+                  height: 9.0,
                 ),
                 const Text(
                   "Quand doit-on récolter?",
@@ -1404,7 +1664,7 @@ class _FichForm2State extends State<FichForm2> {
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
                 label("Age: ", 20.0),
-                labelRep(age ?? "", 19.0),
+                labelRep(age ?? "...", 19.0),
               ]),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
@@ -1450,6 +1710,13 @@ class _FichForm2State extends State<FichForm2> {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
+                label("Quelles parties récolter ?  ", 20.0),
+                const SizedBox(height: 40.0)
+              ]),
+              labelRep(partie ?? "", 19.0),
+              const Divider(
+                  color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
+              Row(children: [
                 label("Quand doit-on récolter?  ", 20.0),
                 const SizedBox(height: 40.0)
               ]),
@@ -1464,14 +1731,16 @@ class _FichForm2State extends State<FichForm2> {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Comment procède-t-on au séchage?  ", 20.0),
+                Expanded(
+                    child: label("Comment procède-t-on au séchage?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(sechage ?? "", 19.0),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Comment se faire la préparation?  ", 20.0),
+                Expanded(
+                    child: label("Comment se faire la préparation?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(preparation ?? "", 19.0),
@@ -1496,21 +1765,26 @@ class _FichForm2State extends State<FichForm2> {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Comment utilise-t-on la préparation?  ", 20.0),
+                Expanded(
+                    child:
+                        label("Comment utilise-t-on la préparation?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(emploi ?? "", 19.0),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Quelle est la durée du traitement?  ", 20.0),
+                Expanded(
+                    child: label("Quelle est la durée du traitement?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(dureTraitement ?? "", 19.0),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("En cas d'intoxication comment procédé?  ", 20.0),
+                Expanded(
+                    child: label(
+                        "En cas d'intoxication comment procédé?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(intox ?? "", 19.0),
@@ -1539,14 +1813,18 @@ class _FichForm2State extends State<FichForm2> {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Quelle est la dose journalière (Enfant)?  ", 20.0),
+                Expanded(
+                    child: label(
+                        "Quelle est la dose journalière (Enfant)?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(consoEnfant ?? "", 19.0),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Quelle est la dose journalière (Adulte)?  ", 20.0),
+                Expanded(
+                    child: label(
+                        "Quelle est la dose journalière (Adulte)?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(consoAdulte ?? "", 19.0),
@@ -1555,39 +1833,52 @@ class _FichForm2State extends State<FichForm2> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                            Color.fromARGB(255, 16, 82, 18))),
-                    onPressed: () {
-                      save();
-                    },
-                    child: Row(
-                      children: const [
-                        Icon(Icons.save, size: 32.0, color: Colors.white),
-                        Text("Enregistrer",
-                            style:
-                                TextStyle(fontSize: 20, color: Colors.orange)),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
+                  Expanded(
+                    child: ElevatedButton(
                       style: const ButtonStyle(
                           backgroundColor: MaterialStatePropertyAll(
-                              Color.fromARGB(255, 17, 66, 18))),
-                      onPressed: null,
+                              Color.fromARGB(255, 16, 82, 18))),
+                      onPressed: () {
+                        save();
+                      },
                       child: Row(
                         children: const [
-                          Icon(
-                            size: 32.0,
-                            FontAwesomeIcons.arrowsRotate,
-                            color: Colors.white,
+                          Icon(Icons.save, size: 32.0, color: Colors.white),
+                          Expanded(
+                            child: Text("Save",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.orange)),
                           ),
-                          Text("Renitialiser",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.orange))
                         ],
-                      ))
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 15.0,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                        style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(
+                                Color.fromARGB(255, 17, 66, 18))),
+                        onPressed: () {
+                          SqlHelper.del();
+                        },
+                        child: Row(
+                          children: const [
+                            Icon(
+                              size: 32.0,
+                              FontAwesomeIcons.arrowsRotate,
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                              child: Text("Reset",
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.orange)),
+                            )
+                          ],
+                        )),
+                  )
                 ],
               ),
             ],
@@ -1598,7 +1889,11 @@ class _FichForm2State extends State<FichForm2> {
     }
   }
 
-  void save() {
+  void save() async {
+    String ml = "";
+    for (int i = 0; i < maladies.length; i++) {
+      ml += "${maladies[i]};";
+    }
     fiche = Fiche(
       plantID: widget.plant.id,
       doseAdulte: consoAdulte,
@@ -1612,10 +1907,10 @@ class _FichForm2State extends State<FichForm2> {
       preparation: preparation,
       sechage: sechage,
       quatiteMateriel: materiel_vegetal,
-      sacre: "",
+      sacre: q2,
       utilisation: emploi,
-      partie: "",
-      maladies: "",
+      partie: partie,
+      maladies: ml,
       typePerson: typePersonne,
       typeAliment: typeAliment.text,
       nom: name.text,
@@ -1623,7 +1918,16 @@ class _FichForm2State extends State<FichForm2> {
       lieu: lieu.text,
       sex: gender,
     );
-    initFiche = true;
+    await SqlHelper.db();
+    int val = await SqlHelper.addFiche(fiche);
+    // Plant p = SqlHelper.getOnePlant()
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return FichList(
+        plant: widget.plant,
+      );
+    }));
+    debugPrint(val.toString());
+    // initFiche = true;
   }
 
   Widget result(Fiche fich) {
