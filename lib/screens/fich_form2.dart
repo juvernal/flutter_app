@@ -1658,7 +1658,7 @@ class _FichForm2State extends State<FichForm2> {
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
                 label("Type de personne: ", 20.0),
-                labelRep(typePersonne ?? "", 19.0),
+                Expanded(child: labelRep(typePersonne ?? "", 19.0)),
               ]),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
@@ -1921,6 +1921,7 @@ class _FichForm2State extends State<FichForm2> {
     await SqlHelper.db();
     int val = await SqlHelper.addFiche(fiche);
     // Plant p = SqlHelper.getOnePlant()
+    // ignore: use_build_context_synchronously
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return FichList(
         plant: widget.plant,

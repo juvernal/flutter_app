@@ -14,7 +14,7 @@ class FicheData extends StatelessWidget {
   Widget build(BuildContext context) {
     List<String> maladies = fiche!.maladies!.split(";");
     return Scaffold(
-        appBar: myAppBar(context, "Nouvelle plante".toUpperCase()),
+        appBar: myAppBar(context, "fiche ${fiche!.id}".toUpperCase()),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -102,7 +102,8 @@ class FicheData extends StatelessWidget {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Comment procède-t-on au séchage?  ", 20.0),
+                Expanded(
+                    child: label("Comment procède-t-on au séchage?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(fiche!.sechage ?? "", 19.0),
@@ -134,7 +135,9 @@ class FicheData extends StatelessWidget {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Comment utilise-t-on la préparation?  ", 20.0),
+                Expanded(
+                    child:
+                        label("Comment utilise-t-on la préparation?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(fiche!.utilisation ?? "", 19.0),
@@ -179,14 +182,18 @@ class FicheData extends StatelessWidget {
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Quelle est la dose journalière (Enfant)?  ", 20.0),
+                Expanded(
+                    child: label(
+                        "Quelle est la dose journalière (Enfant)?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(fiche!.doseEnfant ?? "", 19.0),
               const Divider(
                   color: Color.fromARGB(255, 14, 82, 16), height: 50.0),
               Row(children: [
-                label("Quelle est la dose journalière (Adulte)?  ", 20.0),
+                Expanded(
+                    child: label(
+                        "Quelle est la dose journalière (Adulte)?  ", 20.0)),
                 const SizedBox(height: 40.0)
               ]),
               labelRep(fiche!.doseAdulte ?? "", 19.0),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:testapp2/screens/About.dart';
 import 'package:testapp2/screens/FichList.dart';
@@ -102,6 +103,7 @@ class TheHome extends StatefulWidget {
 class _TheHomeState extends State<TheHome> {
   List<Map<String, dynamic>> plantList = <Map<String, dynamic>>[];
   Constants constants = Constants();
+  bool isloading = false;
 
   @override
   void initState() {
@@ -110,23 +112,20 @@ class _TheHomeState extends State<TheHome> {
     super.initState();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-
-  //   Timer(const Duration(seconds: 2), () {
-  //     getdata();
-  //   });
-  // }
-
   getdata() async {
     // final a = Provider.of<PlantProvider>(context, listen: false).plants;
     final a = await SqlHelper.getAllPlants();
     // plantList = a;
     setState(() {
       plantList = a;
+      isloading = true;
       // plantList = plantList;
     }); //refresh UI after getting data from table.
+  }
+
+  FutureOr onGoBack(dynamic value) {
+    getdata();
+    setState(() {});
   }
 
   @override
@@ -136,55 +135,152 @@ class _TheHomeState extends State<TheHome> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              return const MyForm();
-            }),
-          );
+          Route route = MaterialPageRoute(builder: (context) => const MyForm());
+          Navigator.push(context, route).then(onGoBack);
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) {
+          //     return const MyForm();
+          //   }),
+          // );
         },
         backgroundColor: constants.primaryColor,
         child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         child: Container(
-          child: plantList.isEmpty
-              ? const Center(
-                  heightFactor: 15.0,
-                  child: Text(
-                    "Welcome submit a new plant by pressing The PLUS button",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                )
-              : Column(
-                  children: plantList.map((plant) {
-                    return Card(
-                      child: ListTile(
-                        leading:
-                            Utility.imageFromBase64String(plant["photo"] ?? ""),
-                        title: Text(plant["nom_scientifique"]),
-                        subtitle: Text(plant["type"]),
-                        trailing: const Text("0"),
-                        onTap: () {
-                          Plant pl = Plant(
-                              description: plant["description"],
-                              localisation: plant["localisation"],
-                              nomScientifique: plant["nom_scientifique"],
-                              nomVernaculaire: plant["nom_vernaculaire"],
-                              photo: plant["photo"],
-                              type: plant["type"],
-                              id: plant["id"]);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return FichList(plant: pl);
-                          }));
-                        },
+          child: isloading
+              ? plantList.isEmpty
+                  ? const Center(
+                      heightFactor: 15.0,
+                      child: Text(
+                        "Welcome submit a new plant by pressing The PLUS button",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    );
-                  }).toList(),
+                    )
+                  : Column(
+                      children: plantList.map((plant) {
+                        Plant pl = Plant(
+                            description: plant["description"],
+                            localisation: plant["localisation"],
+                            nomScientifique: plant["nom_scientifique"],
+                            nomVernaculaire: plant["nom_vernaculaire"],
+                            photo: plant["photo"],
+                            type: plant["type"],
+                            id: plant["id"]);
+                        return Card(
+                          child: ListTile(
+                            leading: Utility.imageFromBase64String(
+                                plant["photo"] ?? ""),
+                            title: Text(plant["nom_scientifique"]),
+                            subtitle: Text(plant["type"]),
+                            trailing: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    //call your onpressed function here
+                                    Route route = MaterialPageRoute(
+                                        builder: (context) => MyForm(
+                                              plant: pl,
+                                            ));
+                                    Navigator.push(context, route)
+                                        .then(onGoBack);
+                                  },
+                                  child: const Icon(Icons.edit),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    //call your onpressed function here
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert(context, plant["id"]);
+                                      },
+                                    ).then(onGoBack);
+                                    setState(() {});
+                                  },
+                                  child: const Icon(Icons.delete),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              // Plant pl = Plant(
+                              //     description: plant["description"],
+                              //     localisation: plant["localisation"],
+                              //     nomScientifique: plant["nom_scientifique"],
+                              //     nomVernaculaire: plant["nom_vernaculaire"],
+                              //     photo: plant["photo"],
+                              //     type: plant["type"],
+                              //     id: plant["id"]);
+                              Route r = MaterialPageRoute(
+                                  builder: (context) => FichList(plant: pl));
+                              Navigator.push(context, r).then(onGoBack);
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    )
+              : Padding(
+                  padding: const EdgeInsets.only(top: 200.0),
+                  child: Center(
+                    child: LoadingAnimationWidget.threeArchedCircle(
+                      color: constants.primaryColor,
+                      size: 100,
+                    ),
+                  ),
                 ),
         ),
       ),
+    );
+  }
+
+  static Widget cancelButton(BuildContext context) {
+    return TextButton(
+      child: const Text(
+        "cancel",
+        style: TextStyle(color: Color.fromARGB(255, 9, 150, 216)),
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  static Widget deleteButton(BuildContext context, int id) {
+    return TextButton(
+      child: const Text(
+        "delete",
+        style: TextStyle(color: Color.fromARGB(255, 206, 7, 7)),
+      ),
+      onPressed: () async {
+        await SqlHelper.deletePlant(id);
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+
+        debugPrint("sucessfull delete");
+      },
+    );
+  }
+
+  AlertDialog alert(BuildContext context, int id) {
+    return AlertDialog(
+      title: Row(
+        children: const [
+          Icon(Icons.dangerous, color: Color.fromARGB(255, 206, 7, 7)),
+          Text(
+            "Attention!!",
+            style: TextStyle(color: Color.fromARGB(255, 206, 7, 7)),
+          )
+        ],
+      ),
+      content: const Text("Are you sure that you want to delete this plant?"),
+      actions: [
+        cancelButton(context),
+        deleteButton(context, id),
+      ],
     );
   }
 }

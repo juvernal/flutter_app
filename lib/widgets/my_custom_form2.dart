@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -11,28 +12,43 @@ import '../usefull/Utility.dart';
 import '../widgets/my_input_decoration.dart';
 import '../usefull/Plant.dart';
 import '../usefull/DBhelp.dart';
+import 'package:path_provider/path_provider.dart';
 import '../bd/bd.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart' show rootBundle;
 // import '../usefull/Utility.dart';
 
 class MyNewForm extends StatefulWidget {
-  const MyNewForm({super.key});
-
+  const MyNewForm({super.key, this.plant});
+  final Plant? plant;
   @override
   State<MyNewForm> createState() => _MyNewFormState();
 }
 
-class ApiImage {
-  final String imageUrl;
-  final String id;
+// class ApiImage {
+//   final String imageUrl;
+//   final String id;
 
-  ApiImage({
-    required this.imageUrl,
-    required this.id,
-  });
-}
+//   ApiImage({
+//     required this.imageUrl,
+//     required this.id,
+//   });
+// }
 
 class _MyNewFormState extends State<MyNewForm> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.plant != null) {
+      loc.text = widget.plant!.localisation;
+      sci.text = widget.plant!.nomScientifique;
+      ver.text = widget.plant!.nomVernaculaire;
+      desc.text = widget.plant!.description;
+      type = widget.plant!.type;
+    }
+  }
+
   final _formKey = GlobalKey<FormBuilderState>();
   final bd = DBHelper();
   final database = SqlHelper();
@@ -79,20 +95,33 @@ class _MyNewFormState extends State<MyNewForm> {
                                 ),
                               ),
                               child: ClipOval(
-                                child: pickedImage != null
-                                    ? Image.file(
-                                        pickedImage!,
-                                        width: 170,
-                                        height: 170,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.asset(
-                                        'images/plante.jpg',
-                                        width: 170,
-                                        height: 170,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
+                                  child: pickedImage != null
+                                      ? Image.file(
+                                          pickedImage!,
+                                          width: 170,
+                                          height: 170,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : widget.plant != null
+                                          ? SizedBox(
+                                              width: 170,
+                                              height: 170,
+                                              child: Image(
+                                                image: MemoryImage(Utility
+                                                    .dataFromBase64String(
+                                                        widget.plant!.photo)),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              // Utility.imageFromBase64String(
+                                              //     widget.plant!.photo),
+                                            )
+                                          : SizedBox(
+                                              width: 170,
+                                              height: 170,
+                                              child: Image.asset(
+                                                "images/plante.jpg",
+                                                fit: BoxFit.cover,
+                                              ))),
                             ),
                             Positioned(
                               bottom: 10,
@@ -116,7 +145,16 @@ class _MyNewFormState extends State<MyNewForm> {
                       const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                   child: FormBuilderTextField(
                     name: "nom_scientifique",
+                    onTap: () => sci.text = '',
                     controller: sci,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "entrer le nom scientifique";
+                      }
+                      return null;
+                    },
+                    // initialValue: widget.plant?.nomScientifique ?? "",
+
                     // validator: required,
                     decoration: myInputDecoration(
                         "Nom scientifique",
@@ -132,6 +170,12 @@ class _MyNewFormState extends State<MyNewForm> {
                   child: FormBuilderTextField(
                     name: "nom_vernaculaire",
                     controller: ver,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "entrer le nom vernaculaire";
+                      }
+                      return null;
+                    },
                     decoration: myInputDecoration(
                       "Nom vernaculaire",
                       FontAwesomeIcons.leaf,
@@ -142,8 +186,15 @@ class _MyNewFormState extends State<MyNewForm> {
                 padding:
                     const EdgeInsets.only(left: 20.0, right: 10.0, top: 20.0),
                 child: DropdownButtonFormField(
-                  // value: 'item1',
+                  // value: 'item1',null
+                  value: widget.plant != null ? widget.plant!.type : null,
                   hint: const Text('type de plante'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'selectionner un type';
+                    }
+                    return null;
+                  },
                   decoration: InputDecoration(
                       labelText: 'typle de plante',
                       enabledBorder: const OutlineInputBorder(
@@ -186,6 +237,7 @@ class _MyNewFormState extends State<MyNewForm> {
                   child: FormBuilderTextField(
                     name: "description",
                     controller: desc,
+                    // validator: ,
                     decoration: myInputDecoration(
                       "Description de la plante",
                       FontAwesomeIcons.info,
@@ -228,9 +280,31 @@ class _MyNewFormState extends State<MyNewForm> {
                         // if (true) {
                         // XFile? img =
                         //     _formKey.currentState?.fields['photo']?.value;
+                        if (!_formKey.currentState!.validate() &&
+                            pickedImage == null) {
+                          // debugPrint("")
+                          return;
+                        }
                         debugPrint("saving...");
-                        String photo = Utility.base64String(
-                            await pickedImage!.readAsBytes());
+                        String photo;
+                        if (widget.plant == null) {
+                          if (pickedImage == null) {
+                            // final appDocDir =
+                            //     await getApplicationDocumentsDirectory();
+                            ByteData bytes =
+                                (await rootBundle.load('images/plante.jpg'));
+                            // String path = "${appDocDir.path}/images/plante.jpg";
+                            // Uint8List bytes = File(path).readAsBytesSync();
+                            photo = Utility.base64String(bytes as Uint8List);
+                          } else {
+                            photo = Utility.base64String(
+                                await pickedImage!.readAsBytes());
+                          }
+                        } else {
+                          photo = Utility.base64String(
+                              Utility.dataFromBase64String(
+                                  widget.plant!.photo));
+                        }
 
                         Plant pl = Plant(
                           nomVernaculaire: ver.text,
@@ -241,37 +315,57 @@ class _MyNewFormState extends State<MyNewForm> {
                           type: type.toString(),
                         );
                         await SqlHelper.db();
-                        int val = await SqlHelper.addPlant(pl);
+
+                        if (widget.plant == null) {
+                          debugPrint("saving");
+                          int val = await SqlHelper.addPlant(pl);
+                          debugPrint(val.toString());
+                        } else {
+                          pl.id = widget.plant!.id;
+                          debugPrint("updating..");
+                          int val = await SqlHelper.updatePlant(pl);
+                        }
                         // ignore: use_build_context_synchronously
                         // Navigator.push(context,
                         //     MaterialPageRoute(builder: (context) {
                         //   return const Home();
                         // }));
                         // ignore: use_build_context_synchronously
-                        // Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                         // ignore: use_build_context_synchronously
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const Home();
-                        }));
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return const Home();
+                        // }));
                         setState(() {});
-                        debugPrint(val.toString());
+                        // debugPrint(val.toString());
                         debugPrint(pl.toString());
                       },
                       child: Row(
-                        children: const [
-                          Icon(
-                            FontAwesomeIcons.floppyDisk,
-                            color: Colors.white,
-                          ),
-                          SizedBox(
+                        children: [
+                          widget.plant == null
+                              ? const Icon(
+                                  FontAwesomeIcons.floppyDisk,
+                                  color: Colors.white,
+                                )
+                              : const Icon(
+                                  FontAwesomeIcons.upload,
+                                  color: Colors.white,
+                                ),
+                          const SizedBox(
                             width: 5.0,
                           ),
-                          Text(
-                            "Enregistrer",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 14.0),
-                          ),
+                          widget.plant == null
+                              ? const Text(
+                                  "Save",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14.0),
+                                )
+                              : const Text(
+                                  "Update",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14.0),
+                                ),
                         ],
                       ),
                     ),
@@ -327,6 +421,18 @@ class _MyNewFormState extends State<MyNewForm> {
         ),
       ),
     );
+  }
+
+  bool validation() {
+    if (sci.text.isEmpty) {
+      sci.text = "Entrer le nom scientifique ";
+      // sci.value =  TextEditingValue();
+      return false;
+    } else if (ver.text.isEmpty) {
+      sci.text = "Entrer le nom vernaculaire";
+      return false;
+    }
+    return true;
   }
 
   pickImage(ImageSource imageType) async {

@@ -257,7 +257,6 @@ class SqlHelper {
   static Future<List<Map<String, dynamic>>> getPlantesFiche(
       int? plantID) async {
     final db = await SqlHelper.db();
-    return db.query("fiche",
-        where: "plant_id = ?", whereArgs: [plantID], limit: 1);
+    return db.query("fiche", where: "plant_id = ?", whereArgs: [plantID]);
   }
 }
