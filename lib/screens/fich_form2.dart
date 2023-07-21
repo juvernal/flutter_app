@@ -1,23 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:testapp2/screens/FichList.dart';
+import 'package:koame_plantMed/screens/FichList.dart';
 import '../usefull/fiche.dart';
 import '../usefull/Plant.dart';
 import '../usefull/Utility.dart';
 import '../widgets/my_app_bar.dart';
-import '../widgets/my_bottom_bar.dart';
+// import '../widgets/my_bottom_bar.dart';
 import '../bd/bd.dart';
 import 'package:im_stepper/stepper.dart';
 
 class FichForm2 extends StatefulWidget {
   final Plant plant;
-  const FichForm2({required this.plant, super.key});
+  const FichForm2({required this.plant, this.fich, super.key});
+  final Fiche? fich;
 
   @override
   State<FichForm2> createState() => _FichForm2State();
 }
 
 class _FichForm2State extends State<FichForm2> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.fich != null) {
+      name.text = widget.fich!.nom!;
+      lieu.text = widget.fich!.lieu!;
+      typeAliment.text = widget.fich!.typeAliment!;
+      typePersonne = widget.fich!.typePerson;
+      age = widget.fich!.age;
+      consoAdulte = widget.fich!.doseAdulte;
+      consoEnfant = widget.fich!.doseEnfant;
+      dure = widget.fich!.duree;
+      dureTraitement = widget.fich!.dureTraitement;
+      effet = widget.fich!.effetSecondaire;
+      emploi = widget.fich!.utilisation;
+      etat = widget.fich!.etat;
+      gender = widget.fich!.sex;
+      intox = widget.fich!.intoxication;
+      materiel_vegetal = widget.fich!.quatiteMateriel;
+      partie = widget.fich!.partie;
+      preparation = widget.fich!.preparation;
+      q1 = "oui";
+      q2 = widget.fich!.sacre;
+      recolte = widget.fich!.periodeRecolte;
+      sechage = widget.fich!.sechage;
+      maladies = widget.fich!.maladies!.split(";");
+      for (int i = 0; i < list.length; i++) {
+        for (int j = 0; j < maladies.length; j++) {
+          if (mals[i] == maladies[j]) {
+            list[i] = true;
+          }
+        }
+      }
+    }
+  }
+
   int activeStep = 0; // Initial step set to 5.
 
   int upperBound = 9;
@@ -73,6 +111,7 @@ class _FichForm2State extends State<FichForm2> {
   String? q6;
   String? q7;
   String? effet;
+  // ignore: non_constant_identifier_names
   String? materiel_vegetal;
   String? dure;
   String? emploi;
@@ -172,6 +211,8 @@ class _FichForm2State extends State<FichForm2> {
                       title: const Text("Herboriste"),
                       activeColor: radioColor(),
                       value: "Herboriste",
+                      // selected: widget.fich!.typePerson == "Herboriste",
+                      // autofocus: widget.fich!.typePerson == "Herboriste",
                       groupValue: typePersonne,
                       onChanged: (value) {
                         setState(() {
@@ -186,6 +227,8 @@ class _FichForm2State extends State<FichForm2> {
                       activeColor: radioColor(),
                       value: "Tradipraticien",
                       groupValue: typePersonne,
+                      // selected: widget.fich!.typePerson == "Tradipraticien",
+                      // autofocus: widget.fich!.typePerson == "Tradipraticien",
                       onChanged: (value) {
                         setState(() {
                           typePersonne = value.toString();
@@ -203,6 +246,8 @@ class _FichForm2State extends State<FichForm2> {
                       title: const Text("Neutre"),
                       activeColor: radioColor(),
                       value: "Habitant neutre",
+                      // selected: widget.fich!.typePerson == "Habitant neutre",
+                      // autofocus: widget.fich!.typePerson == "Habitant neutre",
                       groupValue: typePersonne,
                       onChanged: (value) {
                         setState(() {
@@ -216,6 +261,8 @@ class _FichForm2State extends State<FichForm2> {
                       title: const Text("Malade"),
                       activeColor: radioColor(),
                       value: "Habitant Malade",
+                      // selected: widget.fich!.typePerson == "Habitant Malade",
+                      // autofocus: widget.fich!.typePerson == "Habitant Malade",
                       groupValue: typePersonne,
                       onChanged: (value) {
                         setState(() {
@@ -1841,16 +1888,29 @@ class _FichForm2State extends State<FichForm2> {
                       onPressed: () {
                         save();
                       },
-                      child: Row(
-                        children: const [
-                          Icon(Icons.save, size: 32.0, color: Colors.white),
-                          Expanded(
-                            child: Text("Save",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.orange)),
-                          ),
-                        ],
-                      ),
+                      child: widget.fich == null
+                          ? Row(
+                              children: const [
+                                Icon(Icons.save,
+                                    size: 32.0, color: Colors.white),
+                                Expanded(
+                                  child: Text("Save",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.orange)),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: const [
+                                Icon(Icons.save,
+                                    size: 32.0, color: Colors.white),
+                                Expanded(
+                                  child: Text("Update",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.orange)),
+                                ),
+                              ],
+                            ),
                     ),
                   ),
                   const SizedBox(
@@ -1919,7 +1979,12 @@ class _FichForm2State extends State<FichForm2> {
       sex: gender,
     );
     await SqlHelper.db();
-    int val = await SqlHelper.addFiche(fiche);
+    if (widget.fich == null) {
+      await SqlHelper.addFiche(fiche);
+    } else {
+      fiche.id = widget.fich!.id;
+      await SqlHelper.updateFiche(fiche);
+    }
     // Plant p = SqlHelper.getOnePlant()
     // ignore: use_build_context_synchronously
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -1927,7 +1992,7 @@ class _FichForm2State extends State<FichForm2> {
         plant: widget.plant,
       );
     }));
-    debugPrint(val.toString());
+    // debugPrint(val.toString());
     // initFiche = true;
   }
 

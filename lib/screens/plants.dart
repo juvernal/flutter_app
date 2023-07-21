@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
-import 'package:testapp2/bd/bd.dart';
+// import 'package:provider/provider.dart';
+import 'package:koame_plantMed/bd/bd.dart';
 import '../usefull/Utility.dart';
 import '../usefull/constantes.dart';
-import '../widgets/my_app_bar.dart';
-import '../widgets/my_bottom_bar.dart';
-import '../providers/plant_provider.dart';
+// import '../widgets/my_app_bar.dart';
+// import '../widgets/my_bottom_bar.dart';
+// import '../providers/plant_provider.dart';
 
 class Plants extends StatefulWidget {
   const Plants({super.key});
@@ -57,8 +57,10 @@ class _PlantsState extends State<Plants> {
                           child: Text(
                             "Welcome there is no plant yet please submit a \nnew plant",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         )
                       : Row(
@@ -73,7 +75,8 @@ class _PlantsState extends State<Plants> {
                                   decoration: const BoxDecoration(
                                       boxShadow: [
                                         BoxShadow(
-                                            color: Colors.white38,
+                                            color: Color.fromARGB(
+                                                146, 114, 238, 114),
                                             offset: Offset(0, 1),
                                             spreadRadius: 5.0,
                                             blurRadius: 10.0)
@@ -82,8 +85,25 @@ class _PlantsState extends State<Plants> {
                                           Radius.circular(10.0))),
                                   child: Stack(
                                     children: [
-                                      Utility.imageFromBase64String(
-                                          plant["photo"] ?? ""),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: const Color.fromARGB(
+                                                  255, 4, 39, 1),
+                                              width: 5),
+                                          // borderRadius: const BorderRadius.all(
+                                          //   Radius.circular(100),
+                                          // ),
+                                        ),
+                                        height: 500.0,
+                                        alignment: Alignment.center,
+                                        child: Image(
+                                          image: MemoryImage(
+                                              Utility.dataFromBase64String(
+                                                  plant["photo"])),
+                                          fit: null,
+                                        ),
+                                      ),
                                       Positioned(
                                         top: 0,
                                         right: 50.0,
@@ -128,7 +148,7 @@ class _PlantsState extends State<Plants> {
                                           left: 200.0,
                                           child: TextButton(
                                               onPressed: null,
-                                              child: Text("Voir Plus"))),
+                                              child: Text("Voir"))),
                                     ],
                                   )),
                             );

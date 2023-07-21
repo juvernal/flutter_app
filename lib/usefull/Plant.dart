@@ -1,5 +1,7 @@
 // import 'DBhelp.dart';
 
+// ignore_for_file: file_names
+
 class Plant {
   int? id;
   final String nomScientifique;

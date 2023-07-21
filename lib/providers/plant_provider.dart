@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../usefull/Plant.dart';
+// import '../usefull/Plant.dart';
 import '../bd/bd.dart';
 
 // final initialData = SqlHelper.getAllPlants();

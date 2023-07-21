@@ -3,16 +3,16 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // ignore: depend_on_referenced_packages
 import 'package:image_picker/image_picker.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:testapp2/usefull/constantes.dart';
-import '../screens/Home.dart';
+import 'package:koame_plantMed/usefull/constantes.dart';
+// import '../screens/Home.dart';
 import '../usefull/Utility.dart';
 import '../widgets/my_input_decoration.dart';
 import '../usefull/Plant.dart';
 import '../usefull/DBhelp.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 import '../bd/bd.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -56,8 +56,8 @@ class _MyNewFormState extends State<MyNewForm> {
   TextEditingController sci = TextEditingController();
   TextEditingController ver = TextEditingController();
   TextEditingController desc = TextEditingController();
-  String? type;
-  String? photo;
+  String? type = "";
+  String? photo = "";
   File? pickedImage;
   Constants constants = Constants();
 
@@ -295,6 +295,7 @@ class _MyNewFormState extends State<MyNewForm> {
                                 (await rootBundle.load('images/plante.jpg'));
                             // String path = "${appDocDir.path}/images/plante.jpg";
                             // Uint8List bytes = File(path).readAsBytesSync();
+
                             photo = Utility.base64String(bytes as Uint8List);
                           } else {
                             photo = Utility.base64String(
@@ -323,6 +324,7 @@ class _MyNewFormState extends State<MyNewForm> {
                         } else {
                           pl.id = widget.plant!.id;
                           debugPrint("updating..");
+                          // ignore: unused_local_variable
                           int val = await SqlHelper.updatePlant(pl);
                         }
                         // ignore: use_build_context_synchronously
@@ -430,6 +432,12 @@ class _MyNewFormState extends State<MyNewForm> {
       return false;
     } else if (ver.text.isEmpty) {
       sci.text = "Entrer le nom vernaculaire";
+      return false;
+    } else if (desc.text.isEmpty) {
+      desc.text = "";
+      return false;
+    } else if (loc.text.isEmpty) {
+      loc.text = "";
       return false;
     }
     return true;

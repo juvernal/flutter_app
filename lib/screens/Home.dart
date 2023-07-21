@@ -1,14 +1,16 @@
+// ignore_for_file: file_names
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
-import 'package:testapp2/screens/About.dart';
-import 'package:testapp2/screens/FichList.dart';
-import 'package:testapp2/screens/plants.dart';
-import 'package:testapp2/screens/settings.dart';
-import 'package:testapp2/usefull/constantes.dart';
-import '../providers/plant_provider.dart';
+// import 'package:provider/provider.dart';
+import 'package:koame_plantMed/screens/about.dart';
+import 'package:koame_plantMed/screens/FichList.dart';
+import 'package:koame_plantMed/screens/plants.dart';
+import 'package:koame_plantMed/screens/settings.dart';
+import 'package:koame_plantMed/usefull/constantes.dart';
+// import '../providers/plant_provider.dart';
 import '../usefull/Plant.dart';
 import '../usefull/Utility.dart';
 import '/screens/form.dart';
@@ -186,7 +188,8 @@ class _TheHomeState extends State<TheHome> {
                                     Navigator.push(context, route)
                                         .then(onGoBack);
                                   },
-                                  child: const Icon(Icons.edit),
+                                  child: const Icon(Icons.edit,
+                                      color: Color.fromARGB(255, 1, 87, 6)),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -202,7 +205,8 @@ class _TheHomeState extends State<TheHome> {
                                     ).then(onGoBack);
                                     setState(() {});
                                   },
-                                  child: const Icon(Icons.delete),
+                                  child: const Icon(Icons.delete,
+                                      color: Color.fromARGB(255, 163, 15, 4)),
                                 ),
                               ],
                             ),

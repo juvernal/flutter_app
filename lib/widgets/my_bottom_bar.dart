@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:testapp2/screens/Home.dart';
+import 'package:koame_plantMed/screens/home.dart';
 
-import '../screens/About.dart';
+import '../screens/about.dart';
 import '../screens/plants.dart';
 import '../screens/settings.dart';
 
@@ -110,7 +110,7 @@ class MyBottomAppBar extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return About();
+                      return const About();
                     }));
                   },
                 ),
